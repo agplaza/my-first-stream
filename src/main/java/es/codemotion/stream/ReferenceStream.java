@@ -14,7 +14,7 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Stream<T> filter(Predicate<T> condition)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new FilterStream<>(this, condition);
     }
 
     @Override
