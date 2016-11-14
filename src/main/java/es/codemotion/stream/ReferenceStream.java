@@ -13,19 +13,19 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Stream<T> filter(Predicate<T> condition)
     {
-        return new FilterStream<>(this, condition);
+        return new IntermediateStream<>(this, sink -> new FilterSink<>(sink, condition));
     }
 
     @Override
     public final <R> Stream<R> map(Function<T, R> mapper)
     {
-        return new MapStream<>(this, mapper);
+        return new IntermediateStream<>(this, sink -> new MapSink<>(sink, mapper));
     }
 
     @Override
     public final Stream<T> distinct()
     {
-        return new DistinctStream<>(this);
+        return new IntermediateStream<>(this, sink -> new DistinctSink<>(sink));
     }
 
     @Override
