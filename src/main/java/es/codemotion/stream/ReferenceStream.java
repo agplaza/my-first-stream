@@ -26,7 +26,7 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Stream<T> distinct()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new DistinctStream<>(this);
     }
 
     @Override
