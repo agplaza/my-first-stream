@@ -1,15 +1,20 @@
 package es.codemotion.stream;
 
+import java.util.Iterator;
+
 abstract class AbstractStream<P, T> implements Stream<T>
 {
     protected SourceStream<?> source;
 
     private AbstractStream<?, P> previous;
 
+    private boolean used;
+
     protected AbstractStream(AbstractStream<?, P> previous)
     {
         if (previous != null)
         {
+            previous.markUsed();
             this.previous = previous;
             this.source = previous.source;
         }
@@ -17,15 +22,16 @@ abstract class AbstractStream<P, T> implements Stream<T>
 
     protected final <S, R> R evaluate(TerminalSink<T, R> sink)
     {
-        Spliterator<S> spliterator = Unchecked.cast(source.spliterator);
+        Spliterator<S> spliterator = sourceSpliterator();
         Sink<S> wrappedSink = buildWrappedSink(sink);
 
         do
         {
             // nothing
         }
-        while (spliterator.tryAdvance(wrappedSink));
+        while (!wrappedSink.cancellationRequested() && spliterator.tryAdvance(wrappedSink));
 
+        wrappedSink.end();
         return sink.getResult();
     }
 
@@ -44,4 +50,44 @@ abstract class AbstractStream<P, T> implements Stream<T>
     }
 
     protected abstract Sink<P> wrapSink(Sink<T> sink);
+
+    private <S> Spliterator<S> sourceSpliterator()
+    {
+        markUsed();
+        return Unchecked.cast(source.spliterator);
+    }
+
+    private void markUsed()
+    {
+        if (used)
+        {
+            throw new IllegalStateException("Stream has already been operated upon or closed");
+        }
+
+        used = true;
+    }
+
+    @Override
+    public final Stream<T> onClose(Runnable closeHandler)
+    {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
+
+    @Override
+    public final void close()
+    {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
+
+    @Override
+    public final Iterator<T> iterator()
+    {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
+
+    @Override
+    public final Spliterator<T> spliterator()
+    {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
 }
