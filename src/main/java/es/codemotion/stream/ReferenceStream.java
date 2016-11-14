@@ -20,7 +20,7 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final <R> Stream<R> map(Function<T, R> mapper)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new MapStream<>(this, mapper);
     }
 
     @Override
