@@ -38,13 +38,13 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Object[] toArray()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return toArray(size -> new Object[size]);
     }
 
     @Override
     public final <A> A[] toArray(IntFunction<A[]> generator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new ToArraySink<>(generator));
     }
 
     @Override
