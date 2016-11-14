@@ -32,7 +32,7 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final long count()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new CountSink<>());
     }
 
     @Override
