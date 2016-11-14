@@ -37,6 +37,6 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Object[] toArray()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new ToArraySink<>());
     }
 }
