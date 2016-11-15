@@ -18,19 +18,19 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Stream<T> filter(Predicate<T> condition)
     {
-        return new FilterStream<>(this, condition);
+        return new IntermediateStream<>(this, sink -> new FilterSink<>(sink, condition));
     }
 
     @Override
     public final <R> Stream<R> map(Function<T, R> mapper)
     {
-        return new MapStream<>(this, mapper);
+        return new IntermediateStream<>(this, sink -> new MapSink<>(sink, mapper));
     }
 
     @Override
     public final Stream<T> distinct()
     {
-        return new DistinctStream<>(this);
+        return new IntermediateStream<>(this, sink -> new DistinctSink<>(sink));
     }
 
     @Override
@@ -54,25 +54,25 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final <R> Stream<R> flatMap(Function<T, Stream<R>> mapper)
     {
-        return new FlatMapStream<>(this, mapper);
+        return new IntermediateStream<>(this, sink -> new FlatMapSink<>(sink, mapper));
     }
 
     @Override
     public final Stream<T> limit(long maxSize)
     {
-        return new LimitStream<>(this, maxSize);
+        return new IntermediateStream<>(this, sink -> new LimitSink<>(sink, maxSize));
     }
 
     @Override
     public final Stream<T> skip(long n)
     {
-        return new SkipStream<>(this, n);
+        return new IntermediateStream<>(this, sink -> new SkipSink<>(sink, n));
     }
 
     @Override
     public final Stream<T> peek(Consumer<T> action)
     {
-        return new PeekStream<>(this, action);
+        return new IntermediateStream<>(this, sink -> new PeekSink<>(sink, action));
     }
 
     @Override
@@ -84,7 +84,7 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final Stream<T> sorted(Comparator<T> comparator)
     {
-        return new SortedStream<>(this, comparator);
+        return new IntermediateStream<>(this, sink -> new SortedSink<>(sink, comparator));
     }
 
     @Override
