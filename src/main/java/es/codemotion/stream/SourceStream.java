@@ -4,6 +4,8 @@ final class SourceStream<T> extends ReferenceStream<Void, T>
 {
     final Spliterator<?> spliterator;
 
+    Runnable closeHandler = NullRunnable.INSTANCE;
+
     public SourceStream(Spliterator<T> spliterator)
     {
         super(null);

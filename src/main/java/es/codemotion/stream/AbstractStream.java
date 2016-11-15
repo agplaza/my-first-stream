@@ -70,24 +70,25 @@ abstract class AbstractStream<P, T> implements Stream<T>
     @Override
     public final Stream<T> onClose(Runnable closeHandler)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        source.closeHandler = new ComposedRunnable(source.closeHandler, closeHandler);
+        return this;
     }
 
     @Override
     public final void close()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        source.closeHandler.run();
     }
 
     @Override
     public final Iterator<T> iterator()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new SpliteratorIterator<>(spliterator());
     }
 
     @Override
     public final Spliterator<T> spliterator()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new WrappingSpliterator<>(this, sourceSpliterator());
     }
 }

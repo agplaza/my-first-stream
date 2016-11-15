@@ -11,6 +11,6 @@ public final class Collectors
 
     public static <T> Collector<T, List<T>, List<T>> toList()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new ListCollector<>();
     }
 }

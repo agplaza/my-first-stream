@@ -4,6 +4,10 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.*;
 
+import static es.codemotion.stream.Comparators.naturalOrder;
+import static java.util.function.BinaryOperator.maxBy;
+import static java.util.function.BinaryOperator.minBy;
+
 abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
 {
     protected ReferenceStream(AbstractStream<?, P> previous)
@@ -50,102 +54,102 @@ abstract class ReferenceStream<P, T> extends AbstractStream<P, T>
     @Override
     public final <R> Stream<R> flatMap(Function<T, Stream<R>> mapper)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new FlatMapStream<>(this, mapper);
     }
 
     @Override
     public final Stream<T> limit(long maxSize)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new LimitStream<>(this, maxSize);
     }
 
     @Override
     public final Stream<T> skip(long n)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new SkipStream<>(this, n);
     }
 
     @Override
     public final Stream<T> peek(Consumer<T> action)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new PeekStream<>(this, action);
     }
 
     @Override
     public final Stream<T> sorted()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return sorted(naturalOrder());
     }
 
     @Override
     public final Stream<T> sorted(Comparator<T> comparator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return new SortedStream<>(this, comparator);
     }
 
     @Override
     public final Optional<T> min(Comparator<T> comparator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return reduce(minBy(comparator));
     }
 
     @Override
     public final Optional<T> max(Comparator<T> comparator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return reduce(maxBy(comparator));
     }
 
     @Override
     public final boolean anyMatch(Predicate<T> condition)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new AnyMatchSink<>(condition));
     }
 
     @Override
     public final boolean allMatch(Predicate<T> condition)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new AllMatchSink<>(condition));
     }
 
     @Override
     public final boolean noneMatch(Predicate<T> condition)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return allMatch(condition.negate());
     }
 
     @Override
     public final Optional<T> findFirst()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new FindSink<>());
     }
 
     @Override
     public final Optional<T> findAny()
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return findFirst();
     }
 
     @Override
     public final void forEach(Consumer<T> action)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        evaluate(new ForEachSink<>(action));
     }
 
     @Override
     public final T reduce(T identity, BinaryOperator<T> accumulator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new ReduceSink<>(identity, accumulator)).get();
     }
 
     @Override
     public final Optional<T> reduce(BinaryOperator<T> accumulator)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new ReduceSink<>(accumulator));
     }
 
     @Override
     public final <R, A> R collect(Collector<T, A, R> collector)
     {
-        throw new UnsupportedOperationException("Not implemented!");
+        return evaluate(new CollectSink<>(collector));
     }
 }
