@@ -16,8 +16,6 @@ final class ToArraySink<T> implements TerminalSink<T, Object[]>
     @Override
     public Object[] getResult()
     {
-        Object[] array = new Object[accumulator.size()];
-        accumulator.toArray(array);
-        return array;
+        return accumulator.toArray();
     }
 }
